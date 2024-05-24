@@ -10,25 +10,49 @@ if __name__ == '__main__':
     try:
         in_file = sys.argv[1]
     except IndexError:
-        print("You must pass in a file name!")
+        print("Usage:\n"
+              "  lrclib-cli.py <path to file> --artist [artist name override] --album [album name override]")
         exit(-1)
     if not os.path.isfile(in_file):
         raise FileNotFoundError(in_file)
+
+    artist_override = None
+    album_override = None
+    for arg in range(len(sys.argv)):
+        if sys.argv[arg] == '--artist':
+            try:
+                artist_override = sys.argv[arg + 1]
+            except IndexError:
+                pass
+        elif sys.argv[arg] == '--album':
+            try:
+                album_override = sys.argv[arg + 1]
+            except IndexError:
+                pass
+
     try:
         music_file = mutagen.File(in_file, easy=True)
     except mutagen.MutagenError:
         print("This does not appear to be a valid audio file!")
         exit(-1)
     try:
-        track_artist = music_file["artist"][0]
+        if artist_override is not None:
+            track_artist = artist_override
+        else:
+            track_artist = music_file["artist"][0]
         track_title = music_file["title"][0]
-        track_album = music_file["album"][0]
+        if album_override is not None:
+            track_album = album_override
+        else:
+            track_album = music_file["album"][0]
         track_length = round(music_file.info.length)
     except KeyError:
         print("Audio metadata missing! This track could not be identified.")
         exit(-1)
+
     print("Track: " + music_file["title"][0] + "\nArtist: " + track_artist + "\nAlbum: " + track_album + "\nLength: " +
           str(track_length) + " seconds")
+
     lrclib_url = ("https://lrclib.net/api/get?" + "artist_name=" + track_artist + "&track_name=" + track_title +
                   "&album_name=" + track_album + "&duration=" + str(track_length))
     lrclib_response = requests.get(url=lrclib_url, stream=True)
