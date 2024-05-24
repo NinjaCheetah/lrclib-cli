@@ -13,11 +13,11 @@ For this tool to work properly, your music **must** have metadata tags for the t
 ## Usage
 For your average audio file, you can just use the following command to get your lyrics.
 ```shell
-python3 lrclib-cli <path to music file.mp3/.m4a/.whatever>
+python3 lrclib-cli.py <path to music file.mp3/.m4a/.whatever>
 ```
 In some cases, your local album or artist name may not match the "correct" one. You can specify overrides for the artist, album, or both, like this:
 ```shell
 python3 lrclib-cli example.mp3 --artist "NinjaCheetah" --album "My Cool Album"
 ```
 
-The script will inform you if either synced or plain lyrics were successfully downloaded, and the lyrics will be saved to an LRC file with the same name as your input file (minus the extension of course) in the same directory.
+The script will inform you if either synced or plain lyrics were successfully downloaded (or if the song is an instrumental/lyrics aren't available), and the lyrics will be saved to an LRC file with the same name as your input file (minus the extension of course) in the same directory.
