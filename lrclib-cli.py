@@ -12,7 +12,7 @@ if __name__ == '__main__':
     except IndexError:
         print("Usage:\n"
               "  lrclib-cli.py <path to file> --artist [artist name override] --album [album name override]")
-        exit(-1)
+        sys.exit(-1)
     if not os.path.isfile(in_file):
         raise FileNotFoundError(in_file)
 
@@ -34,7 +34,7 @@ if __name__ == '__main__':
         music_file = mutagen.File(in_file, easy=True)
     except mutagen.MutagenError:
         print("This does not appear to be a valid audio file!")
-        exit(-1)
+        sys.exit(-1)
     try:
         if artist_override is not None:
             track_artist = artist_override
@@ -48,7 +48,7 @@ if __name__ == '__main__':
         track_length = round(music_file.info.length)
     except KeyError:
         print("Audio metadata missing! This track could not be identified.")
-        exit(-1)
+        sys.exit(-1)
 
     print("Track: " + music_file["title"][0] + "\nArtist: " + track_artist + "\nAlbum: " + track_album + "\nLength: " +
           str(track_length) + " seconds")
@@ -64,16 +64,16 @@ if __name__ == '__main__':
                 if synced_lyrics is None:
                     out_file.write(lrclib_json["plainLyrics"])
                     print("No synced lyrics available! Plain lyrics have been saved instead.")
-                    exit(1)
+                    sys.exit(1)
                 else:
                     out_file.write(synced_lyrics)
                     print("Synced lyrics have been saved!")
-                    exit(0)
+                    sys.exit(0)
         else:
             print("This track is an instrumental!")
-            exit(-2)
+            sys.exit(-2)
     elif lrclib_response.status_code == 404:
         print("No lyrics could be found for that track!")
-        exit(-3)
+        sys.exit(-3)
     else:
         raise ConnectionError(lrclib_response)
